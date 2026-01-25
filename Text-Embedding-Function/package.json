@@ -1,23 +1,30 @@
 {
-  "name": "text-embedding-function",
+  "name": "text-embedding-lib",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "./dist/my-ts-lib.umd.js",
-  "module": "./dist/my-ts-lib.es.js",
+  "main": "./dist/text-embedding-lib.umd.js",
+  "module": "./dist/text-embedding-lib.es.js",
   "types": "./dist/types/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run --coverage"
   },
   "devDependencies": {
     "@types/node": "^25.0.9",
+    "@vitest/coverage-v8": "^4.0.18",
     "typescript": "~5.9.3",
     "vite": "^7.2.4"
   },
   "dependencies": {
-    "path": "^0.12.7"
+    "chromadb": "^3.2.2",
+    "fp-ts": "^2.16.11",
+    "path": "^0.12.7",
+    "vitest": "^4.0.18"
   }
 }

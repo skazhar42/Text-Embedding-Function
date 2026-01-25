@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1769340359338" clover="3.2.0">
+  <project timestamp="1769340359339" name="All files">
+    <metrics statements="42" coveredstatements="28" conditionals="8" coveredconditionals="6" methods="31" coveredmethods="28" elements="81" coveredelements="62" complexity="0" loc="42" ncloc="42" packages="1" files="1" classes="1"/>
+    <file name="embedding-function.ts" path="/Users/azharuddinshaik/Azhar/personal-projects/Text-Embedding-Function/Text-Embedding-Function/src/embedding-function.ts">
+      <metrics statements="42" coveredstatements="28" conditionals="8" coveredconditionals="6" methods="31" coveredmethods="28"/>
+      <line num="11" count="55" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="14" count="16" type="cond" truecount="2" falsecount="0"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="17" count="14" type="cond" truecount="2" falsecount="0"/>
+      <line num="19" count="15" type="stmt"/>
+      <line num="25" count="28" type="stmt"/>
+      <line num="28" count="27" type="stmt"/>
+      <line num="36" count="84" type="stmt"/>
+      <line num="41" count="11" type="stmt"/>
+      <line num="44" count="73" type="stmt"/>
+      <line num="53" count="35" type="stmt"/>
+      <line num="54" count="35" type="stmt"/>
+      <line num="57" count="32" type="stmt"/>
+      <line num="58" count="3" type="stmt"/>
+      <line num="74" count="16" type="stmt"/>
+      <line num="79" count="16" type="cond" truecount="2" falsecount="0"/>
+      <line num="80" count="10" type="stmt"/>
+      <line num="81" count="10" type="stmt"/>
+      <line num="87" count="0" type="stmt"/>
+      <line num="89" count="0" type="stmt"/>
+      <line num="90" count="0" type="stmt"/>
+      <line num="91" count="0" type="stmt"/>
+      <line num="95" count="0" type="stmt"/>
+      <line num="97" count="0" type="stmt"/>
+      <line num="98" count="0" type="stmt"/>
+      <line num="100" count="0" type="stmt"/>
+      <line num="112" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="113" count="0" type="stmt"/>
+      <line num="118" count="0" type="stmt"/>
+      <line num="119" count="0" type="stmt"/>
+      <line num="122" count="0" type="stmt"/>
+      <line num="126" count="0" type="stmt"/>
+      <line num="133" count="2" type="stmt"/>
+      <line num="137" count="1" type="stmt"/>
+      <line num="150" count="14" type="stmt"/>
+      <line num="159" count="14" type="stmt"/>
+      <line num="162" count="4" type="stmt"/>
+      <line num="171" count="7" type="stmt"/>
+      <line num="180" count="7" type="stmt"/>
+      <line num="183" count="4" type="stmt"/>
+      <line num="184" count="3" type="stmt"/>
+    </file>
+  </project>
+</coverage>
