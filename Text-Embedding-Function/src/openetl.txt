@@ -1,0 +1,153 @@
+Here’s a detailed explanation of how OpenETL works based on the documentation and repository you linked, including a step-by-step example of an ETL pipeline.
+📌 What Is OpenETL?
+OpenETL is an open-source ETL framework (Extract, Transform, Load) built in TypeScript for Node.js. It lets developers define data pipelines that:
+Extract data from a source (API, database, file, etc.)
+Transform that data (filter, map, enrich, etc.)
+Load it into a target destination (database, another API, file, etc.)
+It’s designed to be:
+Lightweight and stateless (no internal state tracking between runs)
+Modular with adapters so you can plug in new systems easily
+Type-safe via TypeScript configs
+🧱 Core Architecture
+Here’s how OpenETL is structured:
+1️⃣ Vault — Credential Store
+A simple object that holds credentials (API keys, OAuth tokens, database logins) referenced by ID in pipelines.
+Example:
+const vault = {
+  'hs-auth': { type: 'oauth2', credentials: { /* HubSpot creds */ } },
+  'pg-auth': { type: 'basic', credentials: { /* PostgreSQL creds */ } },
+};
+2️⃣ Adapters — Connect to Systems
+Adapters are reusable modules that know how to talk to a specific system.
+Each adapter must implement (or describe):
+connect(): establish connection/authentication
+download(): fetch data with pagination if needed
+upload(): send data to target
+Optionally disconnect()
+Adapters register endpoints — e.g., “contacts” for HubSpot.
+3️⃣ Connectors — Configure Adapter Calls
+Connectors are just configuration objects that tell the orchestrator:
+which adapter & endpoint to use,
+which credentials in the Vault to apply,
+which fields, filters, transformations, pagination options, etc.
+Example config:
+{
+  adapter_id: 'hubspot',
+  endpoint_id: 'contacts',
+  credential_id: 'hs-auth',
+  fields: ['firstname', 'lastname']
+}
+4️⃣ Orchestrator — The Engine
+When you call orchestrator.runPipeline(), the orchestrator:
+Resolves credentials from the Vault
+Loads the adapter(s)
+Invokes adapter methods (connect, download, etc.)
+Applies transformations
+Loads data into target
+Handles errors and retries
+Emits events for logging and hooks
+5️⃣ Pipelines — Main Workflow Definition
+A pipeline is a single object passed to orchestrator.runPipeline(). It defines:
+id: human name for tracking
+source (optional): where to extract
+target (optional): where to load
+data (optional): static data to load or transform
+transformations
+rate_limiting
+error_handling
+callbacks (logging, hooks)
+⚠️ Error Handling in OpenETL
+OpenETL has built-in error handling so you can configure how failures are managed during pipeline execution.
+You can define:
+error_handling: {
+  max_retries: 3,       // how many times to retry
+  retry_interval: 1000, // wait time between retries (ms)
+  fail_on_error: false  // whether to stop the pipeline on error
+}
+Behavior:
+Retries adapter operations (connect, download, upload)
+Emits error events for logging
+Supports rate limit backoff and OAuth refresh for 401 errors
+Debugging tip:
+You can add a logging callback to see events like start, extract, load, and error.
+🛠️ Example: HubSpot → PostgreSQL ETL Pipeline
+Here’s a real-world pattern that OpenETL supports:
+📌 Goal
+Extract contacts from HubSpot API and insert them into a PostgreSQL table.
+Step 1: Install Dependencies
+npm install openetl @openetl/hubspot @openetl/postgresql
+Step 2: Define Vault (Credentials)
+const vault = {
+  'hs-auth': {
+    type: 'oauth2',
+    credentials: {
+      client_id: 'your-id',
+      client_secret: 'your-secret',
+      refresh_token: 'your-token'
+    }
+  },
+  'pg-auth': {
+    type: 'basic',
+    credentials: {
+      username: 'your-user',
+      password: 'your-pass',
+      host: 'localhost',
+      database: 'your-db'
+    }
+  }
+};
+🔹 Credentials in the Vault let OpenETL know how to authenticate adapters.
+Step 3: Create Orchestrator
+import Orchestrator from 'openetl';
+import { hubspot } from '@openetl/hubspot';
+import { postgresql } from '@openetl/postgresql';
+
+const orchestrator = Orchestrator(vault, { hubspot, postgresql });
+Step 4: Run a Pipeline
+orchestrator.runPipeline({
+  id: 'hs-to-pg',
+  source: {
+    adapter_id: 'hubspot',
+    endpoint_id: 'contacts',
+    credential_id: 'hs-auth',
+    fields: ['firstname', 'lastname']
+  },
+  target: {
+    adapter_id: 'postgresql',
+    endpoint_id: 'table_insert',
+    credential_id: 'pg-auth',
+    config: {
+      schema: 'public',
+      table: 'contacts'
+    }
+  },
+  error_handling: {
+    max_retries: 3,
+    retry_interval: 2000,
+    fail_on_error: false
+  },
+});
+What This Does
+Connects to HubSpot API using OAuth2
+Fetches firstname and lastname for all contacts
+Connects to PostgreSQL
+Inserts the contacts into the contacts table
+Retries up to 3 times on failures
+📈 Pipeline Events & Logging (Optional)
+You can track pipeline progress by adding a logger:
+orchestrator.runPipeline({
+  id: 'hs-to-pg',
+  source: { /* ... */ },
+  target: { /* ... */ },
+  logging: (event) => console.log(event),
+});
+Events include:
+start, extract, load, error, complete, and info
+🧠 Summary
+Feature	What It Does
+Vault	Stores credentials referenced by ID
+Adapters	Plugins to connect external sources/targets
+Connectors	Config to tell adapters what to do
+Orchestrator	Engine that executes pipelines
+Error Handling	Retry & logging controls
+Pipelines	The actual ETL workflow definitions
